@@ -1,6 +1,7 @@
 # Programming_BlocApps
 Step by Step Learning for BlocApps {Blockchain}
 
+<text>
 -- ================================================
 -- URLs Followed:
 -- ================================================
@@ -220,4 +221,5 @@ Once the server is started using command "bloc start" then run following URL htt
 
 (5) Any online tool for compilation of Solidity code?
 	Code could be compiled at https://ethereum.github.io/browser-solidity/
-	
+
+</text>
