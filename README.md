@@ -125,7 +125,7 @@ Step by Step Learning for BlocApps {Blockchain}
 	------ ================================================
 
 	-- ================================================
-	-- Sample Program-1
+	-- Sample Program
 	-- HelloWorld.sol is a contract which is already placed at location :- C:\Programming_BlocApps\app\contracts\HelloWorld.sol
 	-- ================================================
 	C:\Programming_BlocApps>bloc compile HelloWorld.sol
@@ -214,7 +214,7 @@ Step by Step Learning for BlocApps {Blockchain}
 		Once the server is started using command "bloc start" then run following URL http://localhost:8008/contracts in browser
 
 	(4) How to change the port for server in node.js? 
-		It could be done by modifying the port settings in file D:\Programming_BlocApps\app.js
+		It could be done by modifying the port settings in file C:\Programming_BlocApps\app.js
 		At line no. 45, we do have the port number specifications i.e. given below
 			var port = process.env.PORT || 8000;
 
