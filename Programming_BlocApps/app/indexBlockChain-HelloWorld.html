@@ -1,0 +1,303 @@
+<!DOCTYPE html> 
+<html lang="en">
+<head>
+	<title>  </title>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<meta http-equiv="Content-Language" content="en">
+	<script src="./static/bower_components/jquery/jquery.min.js"></script>
+	<script src="./static/bower_components/bootstrap/dist/js/bootstrap.js"></script>
+	<link rel="stylesheet" href="./static/bower_components/bootstrap/dist/css/bootstrap.min.css">
+	<link rel="stylesheet" href="./static/css/styles.css">
+</head>
+
+<div class="container main__container">
+	<nav class="navbar navbar-inverse navbar-fixed-top">
+		<div class="container-fluid">
+			<div class="navbar-header">
+			<!--
+			<button class="navbar-toggle collapsed" type="button" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
+				<span class="sr-only"> Toggle navigation</span>
+				<span class="icon-bar"></span>
+				<span class="icon-bar"></span>
+				<span class="icon-bar"></span>
+			</button>
+			-->
+			<ul class="nav navbar-nav">
+				<li>
+					<a class="nav__logo--link" href="http://portal.blockapps.net/markdown">
+						<img class=" nav__logo" src="http://portal.blockapps.net/static/img/ic_logo.png">
+					</a>
+				</li>
+			</ul>
+			</div>
+		</div>
+	</nav>
+</div>
+
+<!--
+<div class="modal fade bs-example-modal-sm" tabindex="-1" role="dialog" aria-labelledby="mySmallModalLabel" id="passwordModal">
+	<div class="modal-dialog modal-sm">
+		<div class="modal-content">
+			<form id="submitPass" action="/login">
+				<div class="modal-header">
+					<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+						<span aria-hidden="true">&times;</span>
+					</button>
+					<h4 class="modal-title">Keystore Password</h4>
+				</div>
+				<div class="modal-body row">
+					<p class="col-xs-12">Enter your password to sign transactions:</p>
+					<div class="col-xs-12">
+						<input class="form-control" type="password" id="privkeyPassword" name="password">
+					</div>
+				</div>
+				<div class="modal-footer">
+				<button id="submitPassButton" class="btn btn-primary col-sm-4" data-target="#passwordModal">Submit</button>
+				</div>
+			</form>
+		</div>
+	</div>
+</div>
+-->
+
+<!--
+<script>
+$('#submitPassButton').on('click',function(e){
+    e.preventDefault();
+    globalPassword = privkeyPassword.value;
+    console.log("globalPassword set to: " + globalPassword);
+    $('#passwordModal').modal('hide');
+});
+</script>
+-->
+
+<script src="http://strato-dev4.blockapps.net/static/js/blockapps.js"></script>
+<script src="http://strato-dev4.blockapps.net/static/js/ethlightjs.min.js"></script>
+
+
+<script>
+
+var blockapps = require("blockapps-js");
+
+var PrivateKey = blockapps.ethbase.Crypto.PrivateKey;
+
+var Promise = require("bluebird");
+
+// Could be looked up from :- C:\Programming_BlocApps\app\meta\HelloWorld\Latest.json
+var contract = blockapps.Solidity.attach( {"bin":"60606040526101fa806100126000396000f360606040526000357c0100000000000000000000000000000000000000000000000000000000900480630627d48c1461004457806333b5c7361461010657610042565b005b6100986004808035906020019082018035906020019191908080601f016020809104026020016040519081016040528093929190818152602001838380828437820191505050505050909091905050610181565b60405180806020018281038252838181518152602001915080519060200190808383829060006004602084601f0104600f02600301f150905090810190601f1680156100f85780820380516001836020036101000a031916815260200191505b509250505060405180910390f35b61011360048050506101a2565b60405180806020018281038252838181518152602001915080519060200190808383829060006004602084601f0104600f02600301f150905090810190601f1680156101735780820380516001836020036101000a031916815260200191505b509250505060405180910390f35b602060405190810160405280600081526020015081905061019d565b919050565b6020604051908101604052806000815260200150604060405190810160405280600e81526020017f416e616e7961204368617568616e00000000000000000000000000000000000081526020015090506101f7565b9056","xabi":{"funcs":{"getMessage2":{"args":{"inMessage":{"dynamic":true,"type":"String","index":0,"name":"inMessage"}},"selector":"0627d48c","vals":{"outMessage":{"dynamic":true,"type":"String","index":0}}},"getMessage1":{"args":{},"selector":"33b5c736","vals":{"outMessage":{"dynamic":true,"type":"String","index":0}}}}},"name":"HelloWorld","address":"102e4d7afa14a10cf0f0bb9dbd19d5c4555b2069"});
+
+blockapps.setProfile("strato-dev", 'http://strato-dev4.blockapps.net');
+
+var Units = blockapps.ethbase.Units;
+
+// function txFailHandler(e) { $('#passwordModal').modal('show'); };
+
+var globalUser = "admin"; // Following value(s) be updated
+
+var globalAddress = "e2807b606286be178347eac8609527fdb26dc703"; // Following value(s) be updated
+
+var globalPassword = "Test@1234"; // Following value(s) be updated
+
+function callFunc(funcName) {
+
+    var args = {};
+
+    var funcDivElts = document.getElementById(funcName + "Div").children;
+    var len = funcDivElts.length;
+
+    Object.keys(funcDivElts).map(function (key, i) {
+       console.log('key: ' + key + ' value: ' + funcDivElts[key].value + ' name: ' + funcDivElts[key].name);
+       console.log('i: ' + i);
+       console.log('comparison: ' + (key === funcDivElts[key].name));
+       if ((key === funcDivElts[key].name) && (key !== (funcName+'ValueField'))) { args[key] = funcDivElts[key].value; }
+    });
+
+    var contractAddress = contract.account.address.toString();
+    
+    console.log('args: ' + JSON.stringify(args));
+    console.log('contract name: ' + contract.name);
+    console.log('contract address: ' + contractAddress);
+
+    var invokeContractObj =
+    {
+      password: globalPassword,
+      method: funcName,
+      args: args,
+      //value: funcDivElts[len-1].value
+	  value: "1"
+    };
+
+    console.log("invokeContractObj: " + JSON.stringify(invokeContractObj));
+    
+    $.ajax({
+        method: "POST",
+        timeout: "60000",
+        headers: {
+            "content-type": "application/json"
+	    },
+        url: "http://localhost:8008/users/" + globalUser + "/" + globalAddress + "/contract/" + contract.name + "/" + contractAddress + "/call",
+		//url: "http://localhost:8008/users/" + "admin" + "/" + "e2807b606286be178347eac8609527fdb26dc703" + "/contract/" + contract.name + "/" + contractAddress + "/call",
+        data: JSON.stringify(invokeContractObj),
+      })
+      .done(function (res) {
+        afterTX(res);
+    });
+}
+
+function storageAfterTX(result) {
+    var afterTXstring = "Last return value, if it was a transaction: \n  " +
+        ((result === undefined) ? "(nothing)":result);
+
+    return Promise.props(contract.state).then(function(sVars) {
+        afterTXstring += "\n\n Contract storage state:\n\n";
+        for (name in sVars) {
+            var svar = sVars[name]
+            if (typeof svar === "function") {
+                continue;
+            }
+            afterTXstring += "  " + name + " = " + svar + "\n";
+        };
+      return afterTXstring;  
+    });
+} 
+
+function contractBalanceAfterTX(txString) {
+    return contract.account.balance.then(function(bal) {
+        return txString + "\n Contract balance =  " +
+            Units.convertEth(bal).from("wei").to("ether") + " ether\n";
+    });
+}
+
+
+function userBalanceAfterTX(txString) {
+    return blockapps.ethbase.Account(globalAddress).balance.then(function(userBal) {
+        return txString + "\n Your balance     =  " +
+            Units.convertEth(userBal).from("wei").to("ether") + " ether\n";
+    });
+}
+
+
+function resetTextArea(txString)  {
+    document.getElementById("afterTXarea").textContent = txString;
+}
+
+function afterTX(result) {
+    storageAfterTX(result)
+      .then(function (txStr) { 
+          return contractBalanceAfterTX(txStr);
+        })
+      .then(function (txStr) {
+	  return userBalanceAfterTX(txStr);
+        })
+      .then(function (txStr) { 
+          resetTextArea(txStr);
+        })
+      .catch(function (err) {
+          console.log("error caught: " + err); 
+      });
+} 
+</script>
+
+<body>
+	<div class="container">
+		<div class="row">
+			<div class="col-md-9">
+				<!--
+				<div class="form-group">
+					<label for="sel1">Select User</label>
+					<select class="form-control" id="userId" onchange="userChangeHandler(this.value)"></select>
+				</div>
+				<div class="form-group">
+					<label for="sel1">Select Address</label>
+					<select class="form-control" id="globalKeystoreId" onchange="keyChangeHandler(this.value)"></select>
+				</div>
+				-->
+				
+				<div id="functionsDiv">
+					<div id="functionsContainer"> 
+						<h5>Contract Functions</h5>
+						<div id="HelloWorld" class="contractDiv">
+							<div>
+								<div id="getMessage2Div">
+									<button style="background-color: #223765; color: white" class="btn col-sm-12" onclick="callFunc(&#39;getMessage2&#39;)">getMessage2</button>
+									<input class="form-control col-sm-12" type="text" name="inMessage" placeholder="inMessage" id="getMessage2inMessage">
+									<!--<input class="form-control col-sm-12" type="value" name="getMessage2ValueField" placeholder="send value in Ether" id="getMessage2ValueField">-->
+								</div>
+							</div>
+							<div>
+								<div id="getMessage1Div">
+									<button style="background-color: #223765; color: white" class="btn col-sm-12" onclick="callFunc(&#39;getMessage1&#39;)">getMessage1</button> 
+									<!--<input class="form-control col-sm-12" type="value" name="getMessage1ValueField" placeholder="send value in Ether" id="getMessage1ValueField"> -->
+								</div>
+							</div>
+							<textarea class="form-control" id="afterTXarea" readonly="true" rows="14"></textarea> 
+						</div>
+					</div>
+				</div>
+			</div>
+		<div class="col-md-3"></div>
+		</div> 
+	</div> 
+</body>
+ 
+<script>
+/*
+function userChangeHandler(user) {
+  console.log('user is now: ' + user);
+  globalUser = user;
+  
+  $.getJSON( "/users/" + user, function( data ) {
+      $('#globalKeystoreId').empty();
+			 
+      $.each( data, function( key, val ) {
+          $('#globalKeystoreId')
+              .append($('<option>', { key : val })
+	      .text(val));
+				      
+      });
+
+      keyChangeHandler($('#globalKeystoreId').val());
+  });
+}
+
+function keyChangeHandler(address) {
+  globalAddress = address;
+  $('#passwordModal').modal('show');
+  afterTX();
+}
+
+
+function loadHandler() {
+   $.getJSON( "/users/", function( data ) {
+      $.each( data, function( key, val ) {
+          console.log("iterating over data, key: " + key + " val: " + val);
+
+          $('#userId')
+              .append($('<option>', { key : val })
+	      .text(val));
+			 
+      });
+
+      userChangeHandler(data[0]);
+   });
+}
+
+$( document ).ready( function () {
+    loadHandler();
+});
+*/
+</script>
+
+<script>
+	$( document ).ready( afterTX() );
+</script>
+
+</html>
+
+<!--
+URLs for Referencee:-
+	http://strato-dev4.blockapps.net/eth/v1.2/account?address=d5961cbfbe31dd319a336b7dc78c7785320c0afc/contract/HelloWorld/f3e957ec2e7dcadacfed5138358a1bf6216ad2e9/getMessage1
+	http://strato-dev4.blockapps.net/eth/v1.2/account?address=f3e957ec2e7dcadacfed5138358a1bf6216ad2e9
+-->
